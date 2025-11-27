@@ -2,7 +2,7 @@ from httpx import AsyncClient, HTTPStatusError, ConnectTimeout, RequestError, Re
 from requests.auth import HTTPBasicAuth
 from asyncio import Lock
 
-class FMC:
+class AsyncFMC:
     """
     Async SDK for Firepower Management Center
     Args:
@@ -34,3 +34,37 @@ class FMC:
             "limit": 1000, 
             "expanded": True
         }
+
+    async def _get_token(self) -> str:
+        """
+        Retrieves a fresh API token from FMC.
+        Returns:
+            A str for the API token required for subsequent requests.
+        """
+        response = await self.client.post(
+            f"/api/fmc_platform/v1/auth/generatetoken",
+            auth = HTTPBasicAuth(self.username, self.password)
+        )
+        response.raise_for_status()
+        return response.headers["X-auth-access-token"]
+
+    async def _invalidate_token(self) -> None:
+        """
+        Invalidate existing underlying stored API token.
+        """
+        async with self._lock:
+            self._token = None
+
+    # Depending on if we do the data structure with multiple FMCs, likely will need to revise auth strategy.
+    async def _authenticate(self) -> None:
+            """
+            Retrieves a fresh API token from FMC.
+            Returns:
+                A str for the API token required for subsequent requests.
+            """
+            async with self._lock:
+                # Deals with race condition where request 401's and token changed prior to request
+                if self._token:
+                    self.headers["X-auth-access-token"] = self._token
+                self._token = await self._get_token()
+                self.headers["X-auth-access-token"] = self._token
