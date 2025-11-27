@@ -1,3 +1,4 @@
+from sdk.exceptions import RetryError, FMCSDKError
 from httpx import AsyncClient, HTTPStatusError, ConnectTimeout, RequestError, Response
 from requests.auth import HTTPBasicAuth
 from asyncio import Lock
@@ -68,3 +69,45 @@ class AsyncFMC:
                     self.headers["X-auth-access-token"] = self._token
                 self._token = await self._get_token()
                 self.headers["X-auth-access-token"] = self._token
+    
+    # TODO - add pagination
+    async def _request(
+        self,
+        url: str,
+        params: dict | None = None,
+        retries: int = 5
+    ) -> Response:
+        # Add default parameters
+        if params != None:
+            params.update({"limit": 1000, "expanded": True})
+        else:
+            params = {"limit": 1000, "expanded": True}
+        # Start retry loop
+        for attempt in range(retries):
+            print(self._token)
+            try:
+                response = await self.client.get(
+                    url = url,
+                    params = params,
+                    headers = self.headers
+                )
+                response.raise_for_status()
+                return response
+            # TODO - figure out a catch all
+            except HTTPStatusError:
+                # Edge Case: Token expiry mid-request: Auto-refresh and replay logic for requests if token expires.
+                # ^ Workaround currently implemented is to reauth to API and hope not hit retry limit
+                # API Token refresh
+                if response.status_code == 401:
+                    await self._invalidate_token()
+                    await self._authenticate()
+                # Retry limit - TODO: figure out how we handle this, is it just spit out to console or?
+                if attempt == retries - 1:
+                    raise RetryError("Exceeded request retry count")
+            # TODO - need to figure out what this actually represents, think means network error,
+            # as in, no route, int down, - really just that is not reachable from host running SDK.
+            except RequestError:
+                raise
+            # TODO - define what we will do in event of Connect Timeouts... is there anything we can do?
+            except ConnectTimeout:
+                raise
