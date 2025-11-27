@@ -58,17 +58,17 @@ class AsyncFMC:
 
     # Depending on if we do the data structure with multiple FMCs, likely will need to revise auth strategy.
     async def _authenticate(self) -> None:
-            """
-            Retrieves a fresh API token from FMC.
-            Returns:
-                A str for the API token required for subsequent requests.
-            """
-            async with self._lock:
-                # Deals with race condition where request 401's and token changed prior to request
-                if self._token:
-                    self.headers["X-auth-access-token"] = self._token
-                self._token = await self._get_token()
+        """
+        Retrieves a fresh API token from FMC.
+        Returns:
+            A str for the API token required for subsequent requests.
+        """
+        async with self._lock:
+            # Deals with race condition where request 401's and token changed prior to request
+            if self._token:
                 self.headers["X-auth-access-token"] = self._token
+            self._token = await self._get_token()
+            self.headers["X-auth-access-token"] = self._token
     
     # TODO - add pagination
     async def _request(
@@ -111,3 +111,34 @@ class AsyncFMC:
             # TODO - define what we will do in event of Connect Timeouts... is there anything we can do?
             except ConnectTimeout:
                 raise
+
+    async def get_domain_by_name(self, domain_name: str) -> dict:
+        """
+        Retrieves a domain by its name.
+        Args:
+            domain_name: The name of the domain to retrieve.
+        Returns:
+            A dictionary representing the domain.
+        Raises:
+            FMCSDKError: If no domain is found with the given name or an API error occurs.
+        """
+        response = await self._request(
+            url = "/api/fmc_platform/v1/info/domain"
+        )
+        for domain in response.json()["items"]:
+            if domain_name == "Global" and domain["name"] == "Global":
+                return domain
+            if domain["name"].strip("Global/") == domain_name:
+                return domain
+            raise FMCSDKError("No domain found by that name")
+
+    async def get_all_domains(self) -> list[dict]:
+        """
+        Retrieves all domains.
+        Returns:
+            A list of `dict` representing the domain.
+        """
+        response = await self._request(
+            url = "/api/fmc_platform/v1/info/domain"
+        )
+        return response.json()["items"]
