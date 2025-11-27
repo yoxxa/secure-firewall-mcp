@@ -15,3 +15,13 @@ class App:
         )
 
 app = App()
+
+async def main():
+    await app.mcp.run_async(
+        transport="http",
+        host="127.0.0.1",
+        port=8080,
+    )
+
+if __name__ == "__main__":
+    asyncio.run(main())
