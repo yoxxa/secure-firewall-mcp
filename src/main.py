@@ -1,8 +1,16 @@
-from fastmcp import FastMCP, Context
-from fastmcp.exceptions import ToolError
-import asyncio
-
+# Local imports
 from sdk.fmc import AsyncFMC
+from sdk.manager import FMCManager
+from tools.domain import domain, register_domain_tools
+# External imports
+from fastmcp import FastMCP
+import asyncio
+from dotenv import load_dotenv
+import os
+
+load_dotenv(
+    dotenv_path = "creds/.env"
+)
 
 class App:
     def __init__(self):
@@ -13,10 +21,33 @@ class App:
                 Use ....
             """
         )
+        self.fmc_manager = FMCManager()
 
-app = App()
+    def load_fmc_manager(self) -> None:
+        domain.fmc_manager = self.fmc_manager
+
+    async def register_tools(self) -> None:
+        """
+        Extends main MCP server to include `domain` tools
+        Args:
+            mcp: the main MCP server to extend
+        Returns:
+            main MCP server with added endpoints
+        """
+        await register_domain_tools(self.mcp)
 
 async def main():
+    app = App()
+    # Just adding a single FMC for now
+    await app.fmc_manager.add_fmc(                
+        AsyncFMC(
+            host = os.getenv("FMC_HOST"),
+            username = os.getenv("FMC_USERNAME"),
+            password = os.getenv("FMC_PASSWORD")
+        )
+    )
+    app.load_fmc_manager()
+    await app.register_tools()
     await app.mcp.run_async(
         transport="http",
         host="127.0.0.1",
