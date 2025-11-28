@@ -182,6 +182,7 @@ class AsyncFMC:
         for device in response.json()["items"]:
             if device["name"] == device_name:
                 return device
+        raise AsyncFMCError("No device found by the name")
 
     async def get_all_devices(
         self, 
