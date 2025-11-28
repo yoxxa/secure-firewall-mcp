@@ -169,10 +169,12 @@ class AsyncFMC:
         return response.json()["items"]
     
     async def get_device_by_name(
-            self, 
-            domain_uuid: str, 
-            device_name: str
+        self, 
+        device_name: str,
+        domain_uuid: str = None, 
     ) -> dict:
+        if domain_uuid == None:
+            domain_uuid = self.global_domain_uuid
         response = await self._request(
             url = f"/api/fmc_config/v1/domain/{domain_uuid}/devices/devicerecords",
             params = {"expanded": True}
@@ -181,9 +183,15 @@ class AsyncFMC:
             if device["name"] == device_name:
                 return device
 
-    async def get_all_devices(self, domain_uuid: str, device_uuid: str = None) -> list[dict] | dict:
+    async def get_all_devices(
+        self, 
+        domain_uuid: str = None, 
+        device_uuid: str = None
+    ) -> list[dict] | dict:
+        if domain_uuid == None:
+            domain_uuid = self.global_domain_uuid
         if device_uuid:
-           url = f"/api/fmc_config/v1/domain/{domain_uuid}/devices/devicerecords/{device_uuid}"
+            url = f"/api/fmc_config/v1/domain/{domain_uuid}/devices/devicerecords/{device_uuid}"
         else:
             url = f"/api/fmc_config/v1/domain/{domain_uuid}/devices/devicerecords"
         response = await self._request(
