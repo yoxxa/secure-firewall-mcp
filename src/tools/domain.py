@@ -45,8 +45,8 @@ async def get_domain(
             ctx.info("Gathered FMC domains")
             return await fmc.get_domain_by_name(domain_name)
         except AsyncFMCError:
-            ctx.error("No domain found by that name")
-            return None
+            ctx.error(f"No domain found by name {domain_name}")
+            raise ToolError
 
 @domain.mcp.tool(
     name = "getAllDomains",
