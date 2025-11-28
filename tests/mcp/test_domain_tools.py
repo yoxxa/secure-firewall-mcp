@@ -4,10 +4,6 @@ from fastmcp.client import Client
 from fastmcp.client.transports import StreamableHttpTransport
 from fastmcp.exceptions import ToolError
 
-# TODO: 
-# - start to add expected failure cases and params to test error handling
-# - split out into different endpoints
-
 @pytest.mark.parametrize(
     "domain_name", 
     ["Perth", "Global",]
