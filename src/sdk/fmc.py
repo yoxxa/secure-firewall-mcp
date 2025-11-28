@@ -35,6 +35,8 @@ class AsyncFMC:
             "limit": 1000, 
             "expanded": True
         }
+        # Cache global domain
+        self.global_domain_uuid = None
 
     # TODO - determine if this is all thats needed
     # Needed for testing, enables async context manager
@@ -94,7 +96,6 @@ class AsyncFMC:
             params = {"limit": 1000, "expanded": True}
         # Start retry loop
         for attempt in range(retries):
-            print(self._token)
             try:
                 response = await self.client.get(
                     url = url,
@@ -121,6 +122,20 @@ class AsyncFMC:
             # TODO - define what we will do in event of Connect Timeouts... is there anything we can do?
             except ConnectTimeout:
                 raise
+
+    async def set_global_domain(self) -> None:
+        """
+        Retrieves the global domain from FMC and caches it in a class variable.
+        Args:
+            domain_name: The name of the domain to retrieve.
+        """
+        response = await self._request(
+            url = "/api/fmc_platform/v1/info/domain"
+        )
+        for domain in response.json()["items"]:
+            if domain["name"] == "Global":
+                self.global_domain_uuid = domain["uuid"]
+                return
 
     async def get_domain_by_name(self, domain_name: str) -> dict:
         """
@@ -153,7 +168,11 @@ class AsyncFMC:
         )
         return response.json()["items"]
     
-    async def get_device_by_name(self, domain_uuid: str, device_name: str) -> dict:
+    async def get_device_by_name(
+            self, 
+            domain_uuid: str, 
+            device_name: str
+    ) -> dict:
         response = await self._request(
             url = f"/api/fmc_config/v1/domain/{domain_uuid}/devices/devicerecords",
             params = {"expanded": True}

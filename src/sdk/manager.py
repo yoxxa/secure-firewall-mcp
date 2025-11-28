@@ -8,7 +8,10 @@ class FMCManager:
 
     async def add_fmc(self, fmc: AsyncFMC) -> None:
         async with self._lock:
-            self.fmc_list.append(fmc)
+            await fmc.set_global_domain()
+            self.fmc_list.append(
+                fmc
+            )
 
     async def get_fmc_list(self) -> list[AsyncFMC]:
         return self.fmc_list
