@@ -36,6 +36,16 @@ class AsyncFMC:
             "expanded": True
         }
 
+    # TODO - determine if this is all thats needed
+    # Needed for testing, enables async context manager
+    async def __aenter__(self):
+        return self
+
+    # TODO - determine if this is all thats needed
+    # Needed for testing, enables async context manager
+    async def __aexit__(self, exc_type, exc_value, traceback):
+        del self
+
     async def _get_token(self) -> str:
         """
         Retrieves a fresh API token from FMC.
