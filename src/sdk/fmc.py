@@ -1,4 +1,4 @@
-from sdk.exceptions import RetryError, FMCSDKError
+from sdk.exceptions import RetryError, AsyncFMCError
 from httpx import AsyncClient, HTTPStatusError, ConnectTimeout, RequestError, Response
 from requests.auth import HTTPBasicAuth
 from asyncio import Lock
@@ -130,7 +130,7 @@ class AsyncFMC:
                 return domain
             if domain["name"].strip("Global/") == domain_name:
                 return domain
-            raise FMCSDKError("No domain found by that name")
+        raise AsyncFMCError("No domain found by that name")
 
     async def get_all_domains(self) -> list[dict]:
         """

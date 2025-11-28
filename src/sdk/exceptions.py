@@ -5,7 +5,7 @@ class RetryError(Exception):
         super().__init__(message)
 
 # TODO - design exception
-class FMCSDKError(Exception):
+class AsyncFMCError(Exception):
     """
         Custom exception repesenting an error whilst using the FMC SDK
         Args:
