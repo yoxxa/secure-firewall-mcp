@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv(
-    dotenv_path = "creds/.env"
+    dotenv_path = "src/creds/.env"
 )
 
 @pytest_asyncio.fixture
