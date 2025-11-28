@@ -152,3 +152,22 @@ class AsyncFMC:
             url = "/api/fmc_platform/v1/info/domain"
         )
         return response.json()["items"]
+    
+    async def get_device_by_name(self, domain_uuid: str, device_name: str) -> dict:
+        response = await self._request(
+            url = f"/api/fmc_config/v1/domain/{domain_uuid}/devices/devicerecords",
+            params = {"expanded": True}
+        )
+        for device in response.json()["items"]:
+            if device["name"] == device_name:
+                return device
+
+    async def get_all_devices(self, domain_uuid: str, device_uuid: str = None) -> list[dict] | dict:
+        if device_uuid:
+           url = f"/api/fmc_config/v1/domain/{domain_uuid}/devices/devicerecords/{device_uuid}"
+        else:
+            url = f"/api/fmc_config/v1/domain/{domain_uuid}/devices/devicerecords"
+        response = await self._request(
+            url = url
+        )
+        return response.json()["items"]
