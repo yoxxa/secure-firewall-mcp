@@ -1,5 +1,6 @@
 import pytest
-from sdk.fmc import AsyncFMC, AsyncFMCError
+from sdk import AsyncFMC
+from sdk.exceptions import AsyncFMCError
 
 @pytest.mark.parametrize(
     "domain_name", 

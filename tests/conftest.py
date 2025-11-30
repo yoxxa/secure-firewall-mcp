@@ -1,4 +1,4 @@
-from sdk.fmc import AsyncFMC
+from sdk import AsyncFMC
 import pytest_asyncio
 from fastmcp import Client
 from dotenv import load_dotenv
