@@ -5,6 +5,7 @@ from tools.domain import domain, register_domain_tools
 from tools.device import device, register_device_tools
 from tools.health_alert import health_alert, register_health_alert_tools
 from tools.audit_log import audit_log, register_audit_log_tools
+from tools.user import user, register_user_tools
 # External imports
 from fastmcp import FastMCP
 import asyncio
@@ -31,6 +32,7 @@ class App:
         device.fmc_manager = self.fmc_manager
         health_alert.fmc_manager = self.fmc_manager
         audit_log.fmc_manager = self.fmc_manager
+        user.fmc_manager = self.fmc_manager
 
     async def register_tools(self) -> None:
         """
@@ -44,6 +46,7 @@ class App:
         await register_device_tools(self.mcp)
         await register_health_alert_tools(self.mcp)
         await register_audit_log_tools(self.mcp)
+        await register_user_tools(self.mcp)
 
 async def main():
     app = App()
