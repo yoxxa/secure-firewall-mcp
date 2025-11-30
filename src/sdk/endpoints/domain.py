@@ -1,4 +1,4 @@
-from sdk.core.sdk import SDKUtilities
+from sdk.core.utilities import SDKUtilities
 from sdk.exceptions import AsyncFMCError
 
 class DomainSDK(SDKUtilities):
