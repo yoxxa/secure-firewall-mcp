@@ -16,7 +16,7 @@ audit_log = AuditLog()
 
 async def register_audit_log_tools(mcp: FastMCP) -> None:
     """
-    Extends main MCP server to include `health_alert` tools
+    Extends main MCP server to include `audit_log` tools
     Args:
         mcp: the main MCP server to extend
     Returns:
