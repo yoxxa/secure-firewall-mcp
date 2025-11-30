@@ -1,0 +1,16 @@
+#/api/fmc_config/v1/domain/{domainUUID}/users/users
+
+from sdk.core.utilities import SDKUtilities
+from sdk.exceptions import AsyncFMCError
+
+class UserSDK(SDKUtilities):
+    def __init__(self) -> None:
+        pass
+        
+    async def get_all_users(
+        self
+    ) -> list[dict]:
+        response = await self._request(
+            url = f"/api/fmc_config/v1/domain/{self.global_domain_uuid}/users/users"
+        )
+        return response.json()["items"]
