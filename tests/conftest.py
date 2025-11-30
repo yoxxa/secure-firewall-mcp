@@ -20,4 +20,6 @@ async def fmc_client():
         username = os.getenv("FMC_USERNAME"),
         password = os.getenv("FMC_PASSWORD")
     ) as client:
+        # need to set domain in fixture outside code to get tests working
+        await client.set_global_domain()
         yield client
