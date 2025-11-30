@@ -6,8 +6,16 @@ class HealthAlertSDK(SDKUtilities):
         pass
 
     async def get_all_health_alerts(self, domain_uuid: str) -> list[dict]:
+        """
+        Retrieves all red and yellow health alerts for a domain.
+        Args:
+            domain_uuid: The UUID of the domain health alerts to retrieve.
+        Returns:
+            A list[dict] representing the domain health alerts.
+        """
         response = await self._request(
-            url = f"/api/fmc_config/v1/domain/{domain_uuid}/health/alerts"
+            url = f"/api/fmc_config/v1/domain/{domain_uuid}/health/alerts",
+            params = {"limit": 1000, "expanded": True, "filter": "status:red,yellow;"}
         )
         red_alert_list = list()
         for alert in response.json()["items"]:
