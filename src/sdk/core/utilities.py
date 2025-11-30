@@ -59,7 +59,27 @@ class SDKUtilities:
                     headers = self.headers
                 )
                 response.raise_for_status()
-                return response
+                paging = response.json()["paging"]
+                # Check if pagination needed
+                if paging["pages"] == 1:
+                    return response
+                limit = paging["limit"]
+                _response = list()
+                _response.extend(response.json()["items"])
+                for page in range(1, paging["pages"]):
+                    params.update({
+                            "limit": limit,
+                            "offset": limit * page,
+                            "expanded": True
+                    })
+                    response = await self.client.get(
+                        url = url,
+                        params = params,
+                        headers = self.headers
+                    )
+                    response.raise_for_status()
+                    _response.extend(response.json()["items"])
+                return _response
             # TODO - figure out a catch all
             except HTTPStatusError:
                 # Edge Case: Token expiry mid-request: Auto-refresh and replay logic for requests if token expires.
@@ -77,4 +97,6 @@ class SDKUtilities:
                 raise
             # TODO - define what we will do in event of Connect Timeouts... is there anything we can do?
             except ConnectTimeout:
+                raise
+            except KeyError:
                 raise
