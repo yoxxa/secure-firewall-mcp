@@ -2,6 +2,7 @@
 from sdk.fmc import AsyncFMC
 from sdk.manager import FMCManager
 from tools.domain import domain, register_domain_tools
+from tools.device import device, register_device_tools
 # External imports
 from fastmcp import FastMCP
 import asyncio
@@ -9,7 +10,7 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv(
-    dotenv_path = "creds/.env"
+    dotenv_path = "src/creds/.env"
 )
 
 class App:
@@ -25,6 +26,7 @@ class App:
 
     def load_fmc_manager(self) -> None:
         domain.fmc_manager = self.fmc_manager
+        device.fmc_manager = self.fmc_manager
 
     async def register_tools(self) -> None:
         """
@@ -35,6 +37,7 @@ class App:
             main MCP server with added endpoints
         """
         await register_domain_tools(self.mcp)
+        await register_device_tools(self.mcp)
 
 async def main():
     app = App()
