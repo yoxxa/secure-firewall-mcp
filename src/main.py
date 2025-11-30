@@ -3,6 +3,7 @@ from sdk import AsyncFMC
 from sdk.manager import FMCManager
 from tools.domain import domain, register_domain_tools
 from tools.device import device, register_device_tools
+from tools.health_alert import health_alert, register_health_alert_tools
 # External imports
 from fastmcp import FastMCP
 import asyncio
@@ -27,6 +28,7 @@ class App:
     def load_fmc_manager(self) -> None:
         domain.fmc_manager = self.fmc_manager
         device.fmc_manager = self.fmc_manager
+        health_alert.fmc_manager = self.fmc_manager
 
     async def register_tools(self) -> None:
         """
@@ -38,6 +40,7 @@ class App:
         """
         await register_domain_tools(self.mcp)
         await register_device_tools(self.mcp)
+        await register_health_alert_tools(self.mcp)
 
 async def main():
     app = App()
