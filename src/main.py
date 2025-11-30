@@ -1,5 +1,5 @@
 # Local imports
-from sdk.fmc import AsyncFMC
+from sdk import AsyncFMC
 from sdk.manager import FMCManager
 from tools.domain import domain, register_domain_tools
 from tools.device import device, register_device_tools

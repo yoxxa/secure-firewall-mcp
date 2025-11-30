@@ -1,4 +1,4 @@
-from sdk.fmc import AsyncFMC
+from sdk import AsyncFMC
 from asyncio import Lock
 
 class FMCManager:
