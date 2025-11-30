@@ -20,7 +20,7 @@ class AsyncFMC:
         self._token: str = None
         # TODO: Research - other potential parameters
         self.client: AsyncClient = AsyncClient(
-            base_url = self.host,
+            base_url = str(self.host),
             # Change to True for SSL - need cert
             verify = False
         )
@@ -90,10 +90,8 @@ class AsyncFMC:
         retries: int = 5
     ) -> Response:
         # Add default parameters
-        if params != None:
-            params.update({"limit": 1000, "expanded": True})
-        else:
-            params = {"limit": 1000, "expanded": True}
+        if params == None:
+            params = dict({"limit": 1000, "expanded": True})
         # Start retry loop
         for attempt in range(retries):
             try:
@@ -170,11 +168,9 @@ class AsyncFMC:
     
     async def get_device_by_name(
         self, 
-        device_name: str,
-        domain_uuid: str = None, 
+        domain_uuid: str, 
+        device_name: str
     ) -> dict:
-        if domain_uuid == None:
-            domain_uuid = self.global_domain_uuid
         response = await self._request(
             url = f"/api/fmc_config/v1/domain/{domain_uuid}/devices/devicerecords",
             params = {"expanded": True}
@@ -186,16 +182,8 @@ class AsyncFMC:
 
     async def get_all_devices(
         self, 
-        domain_uuid: str = None, 
-        device_uuid: str = None
     ) -> list[dict] | dict:
-        if domain_uuid == None:
-            domain_uuid = self.global_domain_uuid
-        if device_uuid:
-            url = f"/api/fmc_config/v1/domain/{domain_uuid}/devices/devicerecords/{device_uuid}"
-        else:
-            url = f"/api/fmc_config/v1/domain/{domain_uuid}/devices/devicerecords"
         response = await self._request(
-            url = url
+            url = f"/api/fmc_config/v1/domain/{self.global_domain_uuid}/devices/devicerecords"
         )
         return response.json()["items"]
