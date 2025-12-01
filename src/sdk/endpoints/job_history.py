@@ -5,7 +5,7 @@ class JobHistorySDK(SDKUtilities):
     def __init__(self) -> None:
         pass
 
-    async def get_job_history(self) -> list[dict]:
+    async def get_all_job_history(self) -> list[dict]:
         """
         Retrieves all job history for an FMC.
         Returns:
