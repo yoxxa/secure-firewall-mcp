@@ -56,14 +56,7 @@ class App:
 
 async def main():
     app = App()
-    # Just adding a single FMC for now
-    await app.fmc_manager.add_fmc(                
-        AsyncFMC(
-            host = os.getenv("FMC_HOST"),
-            username = os.getenv("FMC_USERNAME"),
-            password = os.getenv("FMC_PASSWORD")
-        )
-    )
+    await app.fmc_manager.add_fmc_from_yaml()
     app.load_fmc_manager()
     await app.register_tools()
     await app.mcp.run_async(
