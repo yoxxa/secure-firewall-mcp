@@ -7,6 +7,7 @@ from tools.health_alert import health_alert, register_health_alert_tools
 from tools.audit_log import audit_log, register_audit_log_tools
 from tools.user import user, register_user_tools
 from tools.job_history import job_history, register_job_history_tools
+from tools.ha_pair import ha_pair, register_ha_pair_tools
 # External imports
 from fastmcp import FastMCP
 import asyncio
@@ -35,6 +36,7 @@ class App:
         audit_log.fmc_manager = self.fmc_manager
         user.fmc_manager = self.fmc_manager
         job_history.fmc_manager = self.fmc_manager
+        ha_pair.fmc_manager = self.fmc_manager
 
     async def register_tools(self) -> None:
         """
@@ -50,6 +52,7 @@ class App:
         await register_audit_log_tools(self.mcp)
         await register_user_tools(self.mcp)
         await register_job_history_tools(self.mcp)
+        await register_ha_pair_tools(self.mcp)
 
 async def main():
     app = App()
