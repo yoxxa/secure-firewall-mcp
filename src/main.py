@@ -1,6 +1,5 @@
 # Local imports
-from sdk import AsyncFMC
-from sdk.manager import FMCManager
+from manager import FMCManager
 from tools.domain import domain, register_domain_tools
 from tools.device import device, register_device_tools
 from tools.health_alert import health_alert, register_health_alert_tools
@@ -56,7 +55,7 @@ class App:
 
 async def main():
     app = App()
-    await app.fmc_manager.add_fmc_from_yaml()
+    await app.fmc_manager.init()
     app.load_fmc_manager()
     await app.register_tools()
     await app.mcp.run_async(
