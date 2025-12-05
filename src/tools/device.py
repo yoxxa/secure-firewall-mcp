@@ -48,11 +48,13 @@ async def get_device(
     for fmc in device.fmc_manager.fmc_list:
         try:
             data = await fmc.get_device_by_name(device_name)
-            return await device.fmc_manager.update_standalone_cache(data)
+            await device.fmc_manager.update_standalone_cache(data)
+            return data
         except AsyncFMCError:
             pass
     raise ToolError
 
+# TODO - add domain_name as optional user input in same fashion as `fmc_host` 
 @device.mcp.tool(
     name = "getAllDevices",
     description = "Retrieves all devices from Cisco Secure Firewall."
