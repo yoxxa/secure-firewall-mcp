@@ -1,7 +1,7 @@
 from sdk.exceptions import AsyncFMCError
 from fastmcp import FastMCP, Context
 from fastmcp.exceptions import ToolError
-from sdk.manager import FMCManager
+from manager import FMCManager
 
 class HealthAlert:
     mcp = FastMCP(
@@ -29,7 +29,7 @@ async def register_health_alert_tools(mcp: FastMCP) -> None:
     description = "Retrieves all health alerts from an FMC."
 )
 async def get_health_alerts(
-    domain_uuid: str,
+    fmc_host: str | None = None,
     ctx: Context | None = None
 ) -> list:
     """
@@ -40,12 +40,15 @@ async def get_health_alerts(
     Returns:
         API response data
     """
+    if fmc_host:
+        fmc = [fmc for fmc in health_alert.fmc_manager.fmc_list if fmc.host.strip("https://") == fmc_host]
+        # fmc[0] = AsyncSDK from list comprehension result
+        return await fmc[0].get_all_health_alerts()
+    response = list([])
     for fmc in health_alert.fmc_manager.fmc_list:
         try:
-            ctx.info(f"Gathering health alerts for {domain_uuid}")
-            return await fmc.get_all_health_alerts(
-                domain_uuid
-            )
+            response.extend(await fmc.get_all_health_alerts())
+            ctx.info(f"Gathering devices for {fmc.host}")
         except AsyncFMCError:
-            ctx.error(f"No health issues found")
-            raise ToolError
+            pass
+    return response
