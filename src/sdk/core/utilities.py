@@ -45,7 +45,8 @@ class SDKUtilities:
         self,
         url: str,
         params: dict | None = None,
-        retries: int = 5
+        retries: int = 5,
+        timeout: int = 10
     ) -> Response:
         # Add default parameters
         if params == None:
@@ -56,7 +57,8 @@ class SDKUtilities:
                 response = await self.client.get(
                     url = url,
                     params = params,
-                    headers = self.headers
+                    headers = self.headers,
+                    timeout = timeout
                 )
                 response.raise_for_status()
                 paging = response.json()["paging"]
@@ -75,7 +77,8 @@ class SDKUtilities:
                     response = await self.client.get(
                         url = url,
                         params = params,
-                        headers = self.headers
+                        headers = self.headers,
+                        timeout = timeout
                     )
                     response.raise_for_status()
                     _response.extend(response.json()["items"])
