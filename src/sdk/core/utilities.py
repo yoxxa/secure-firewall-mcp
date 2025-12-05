@@ -101,5 +101,6 @@ class SDKUtilities:
             # TODO - define what we will do in event of Connect Timeouts... is there anything we can do?
             except ConnectTimeout:
                 raise
+            # TODO - uplift this error, think only means that there are no records, i.e. a 404
             except KeyError:
-                raise
+                raise AsyncFMCError("Response failed")
