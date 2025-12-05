@@ -7,12 +7,10 @@ class DeviceSDK(SDKUtilities):
   
     async def get_device_by_name(
         self, 
-        domain_uuid: str, 
         device_name: str
     ) -> dict:
         response = await self._request(
-            url = f"/api/fmc_config/v1/domain/{domain_uuid}/devices/devicerecords",
-            params = {"expanded": True}
+            url = f"/api/fmc_config/v1/domain/{self.global_domain_uuid}/devices/devicerecords",
         )
         for device in response.json()["items"]:
             if device["name"] == device_name:
@@ -21,7 +19,7 @@ class DeviceSDK(SDKUtilities):
 
     async def get_all_devices(
         self
-    ) -> list[dict] | dict:
+    ) -> list[dict]:
         response = await self._request(
             url = f"/api/fmc_config/v1/domain/{self.global_domain_uuid}/devices/devicerecords"
         )
