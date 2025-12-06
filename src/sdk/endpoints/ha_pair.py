@@ -7,11 +7,10 @@ class HAPairSDK(SDKUtilities):
   
     async def get_ha_pair_by_name(
         self, 
-        domain_uuid: str, 
         device_name: str
     ) -> dict:
         response = await self._request(
-            url = f"/api/fmc_config/v1/domain/{domain_uuid}/devicehapairs/ftddevicehapairs",
+            url = f"/api/fmc_config/v1/domain/{self.global_domain_uuid}/devicehapairs/ftddevicehapairs",
         )
         for device in response.json()["items"]:
             if device["name"] == device_name:
@@ -20,7 +19,7 @@ class HAPairSDK(SDKUtilities):
 
     async def get_all_ha_pairs(
         self
-    ) -> list[dict] | dict:
+    ) -> list[dict]:
         response = await self._request(
             url = f"/api/fmc_config/v1/domain/{self.global_domain_uuid}/devicehapairs/ftddevicehapairs"
         )
