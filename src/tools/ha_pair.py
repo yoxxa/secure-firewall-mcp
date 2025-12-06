@@ -55,11 +55,11 @@ async def get_ha_pair(
     raise ToolError
 
 @ha_pair.mcp.tool(
-    name = "getAllHAPair",
+    name = "getAllHAPairs",
     description = "Retrieves all devices from Cisco Secure Firewall."
 )
 async def get_all_ha_pairs(
-    #fmc_host: str | None = None,
+    fmc_host: str | None = None,
     ctx: Context | None = None
 ) -> list[dict]:
     """
@@ -71,15 +71,15 @@ async def get_all_ha_pairs(
     """
     # TODO - fix below if statement
     # Indicates they want to collect for a specific FMC
-    #if fmc_host:
-    #    fmc = [fmc for fmc in ha_pair.fmc_manager.fmc_list if fmc.host.strip("https://") == fmc_host]
+    if fmc_host:
+        fmc = [fmc for fmc in ha_pair.fmc_manager.fmc_list if fmc.host.strip("https://") == fmc_host]
         # fmc[0] = AsyncSDK from list comprehension result
-    #    return await fmc[0].get_all_ha_pairs()
+        return await fmc[0].get_all_ha_pairs()
     response = list([])
     for fmc in ha_pair.fmc_manager.fmc_list:
         try:
-            ctx.info(f"Gathering devices for {fmc.host}")
             response.extend(await fmc.get_all_ha_pairs())
+            ctx.info(f"Gathering devices for {fmc.host}")
         except AsyncFMCError:
             pass
     return response
