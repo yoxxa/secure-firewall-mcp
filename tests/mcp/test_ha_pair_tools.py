@@ -47,7 +47,7 @@ async def test_get_all_ha_pairs(
     mcp_client: Client[StreamableHttpTransport]
 ):
     result = await mcp_client.call_tool(
-        name = "getAllHAPair",
+        name = "getAllHAPairs",
         arguments = {}
     )
     assert isinstance(result.data, list)
