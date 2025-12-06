@@ -59,7 +59,7 @@ async def get_device(
     name = "getAllDevices",
     description = "Retrieves all devices from Cisco Secure Firewall."
 )
-async def get_devices(
+async def get_all_devices(
     fmc_host: str | None = None,
     ctx: Context | None = None
 ) -> list[dict]:
