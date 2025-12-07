@@ -69,9 +69,12 @@ async def get_all_devices(
     """
     # Indicates they want to collect for a specific FMC
     if fmc_host:
-        fmc = [fmc for fmc in manager.fmc_list if fmc.host.strip("https://") == fmc_host]
-        # fmc[0] = AsyncSDK from list comprehension result
-        return await fmc[0].get_all_devices()
+        try:
+            fmc = [fmc for fmc in manager.fmc_list if fmc.host.strip("https://") == fmc_host]
+            # fmc[0] = AsyncSDK from list comprehension result
+            return await fmc[0].get_all_devices()
+        except:
+            raise AsyncFMCError(f"Cannot return all devices for {fmc_host}")
     response = list([])
     for fmc in manager.fmc_list:
         try:
