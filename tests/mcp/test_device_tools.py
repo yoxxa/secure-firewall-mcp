@@ -51,3 +51,37 @@ async def test_get_all_devices(
         arguments = {}
     )
     assert isinstance(result.data, list)
+
+@pytest.mark.parametrize(
+    "fmc_host", 
+    [
+        "10.66.228.172"
+    ]
+)
+@pytest.mark.asyncio
+async def test_get_all_devices_by_single_fmc(
+    fmc_host: str,
+    mcp_client: Client[StreamableHttpTransport]
+):
+    result = await mcp_client.call_tool(
+        name = "getAllDevices",
+        arguments = {"fmc_host": fmc_host}
+    )
+    assert isinstance(result.data, list)
+
+@pytest.mark.parametrize(
+    "fmc_host", 
+    [
+        "10.66.228.180"
+    ]
+)
+@pytest.mark.asyncio
+async def test_get_all_devices_by_bad_fmc_input(
+    fmc_host: str,
+    mcp_client: Client[StreamableHttpTransport]
+):
+    with pytest.raises(ToolError) as device_not_found:
+        result = await mcp_client.call_tool(
+            name = "getAllDevices",
+            arguments = {"fmc_host": fmc_host}
+        )
