@@ -76,7 +76,7 @@ async def test_get_all_ha_pairs_by_domain(
     ]
 )
 @pytest.mark.asyncio
-async def test_get_all_ha_pairs_by_domain_not_on_fmc(
+async def test_get_all_ha_pairs_by_bad_fmc_input(
     fmc_host: str,
     mcp_client: Client[StreamableHttpTransport]
 ):
