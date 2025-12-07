@@ -1,11 +1,11 @@
 # Local imports
-from manager import FMCManager
-from tools.device import device, register_device_tools
-from tools.health_alert import health_alert, register_health_alert_tools
-from tools.audit_log import audit_log, register_audit_log_tools
-from tools.user import user, register_user_tools
-from tools.job_history import job_history, register_job_history_tools
-from tools.ha_pair import ha_pair, register_ha_pair_tools
+from manager import manager
+from tools.device import register_device_tools
+from tools.health_alert import register_health_alert_tools
+from tools.audit_log import register_audit_log_tools
+from tools.user import register_user_tools
+from tools.job_history import register_job_history_tools
+from tools.ha_pair import register_ha_pair_tools
 # External imports
 from fastmcp import FastMCP
 import asyncio
@@ -25,15 +25,7 @@ class App:
                 Use ....
             """
         )
-        self.fmc_manager = FMCManager()
-
-    def load_fmc_manager(self) -> None:
-        device.fmc_manager = self.fmc_manager
-        health_alert.fmc_manager = self.fmc_manager
-        audit_log.fmc_manager = self.fmc_manager
-        user.fmc_manager = self.fmc_manager
-        job_history.fmc_manager = self.fmc_manager
-        ha_pair.fmc_manager = self.fmc_manager
+        self.fmc_manager = manager
 
     async def register_tools(self) -> None:
         """
@@ -53,7 +45,6 @@ class App:
 async def main():
     app = App()
     await app.fmc_manager.init()
-    app.load_fmc_manager()
     await app.register_tools()
     await app.mcp.run_async(
         transport="http",

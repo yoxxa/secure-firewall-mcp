@@ -1,18 +1,14 @@
 from sdk.exceptions import AsyncFMCError
 from fastmcp import FastMCP, Context
 from fastmcp.exceptions import ToolError
-from sdk.manager import FMCManager
+from manager import manager
 
-class User:
-    mcp = FastMCP(
-        name = "SecureFirewallUser",
-        instructions = """
-            EXPAND
-        """
-    )
-    fmc_manager: FMCManager = None
-
-user = User()
+user = FastMCP(
+    name = "SecureFirewallUser",
+    instructions = """
+        EXPAND
+    """
+)
 
 async def register_user_tools(mcp: FastMCP) -> None:
     """
@@ -22,9 +18,9 @@ async def register_user_tools(mcp: FastMCP) -> None:
     Returns:
         main MCP server with added endpoints
     """
-    await mcp.import_server(user.mcp)
+    await mcp.import_server(user)
 
-@user.mcp.tool(
+@user.tool(
     name = "getAllUsers",
     description = "Retrieves all users from Cisco Secure Firewall."
 )
@@ -38,7 +34,7 @@ async def get_users(
     Returns:
         API response data
     """
-    for fmc in user.fmc_manager.fmc_list:
+    for fmc in manager.fmc_list:
         try:
             ctx.info("Gathered FMC domains")
             return await fmc.get_all_users()

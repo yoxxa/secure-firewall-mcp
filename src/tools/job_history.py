@@ -1,18 +1,14 @@
 from sdk.exceptions import AsyncFMCError
 from fastmcp import FastMCP, Context
 from fastmcp.exceptions import ToolError
-from sdk.manager import FMCManager
+from manager import manager
 
-class JobHistorySDK:
-    mcp = FastMCP(
-        name = "SecureFirewallJobHistory",
-        instructions = """
-            EXPAND
-        """
-    )
-    fmc_manager: FMCManager = None
-
-job_history = JobHistorySDK()
+job_history = FastMCP(
+    name = "SecureFirewallJobHistory",
+    instructions = """
+        EXPAND
+    """
+)
 
 async def register_job_history_tools(mcp: FastMCP) -> None:
     """
@@ -22,9 +18,9 @@ async def register_job_history_tools(mcp: FastMCP) -> None:
     Returns:
         main MCP server with added endpoints
     """
-    await mcp.import_server(job_history.mcp)
+    await mcp.import_server(job_history)
 
-@job_history.mcp.tool(
+@job_history.tool(
     name = "getAllJobHistory",
     description = "Retrieves all jobs from Cisco Secure Firewall."
 )
@@ -38,7 +34,7 @@ async def get_all_job_history(
     Returns:
         API response data
     """
-    for fmc in job_history.fmc_manager.fmc_list:
+    for fmc in manager.fmc_list:
         try:
             ctx.info("Gathered FMC job history")
             return await fmc.get_all_job_history()

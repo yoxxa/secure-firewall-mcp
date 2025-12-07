@@ -1,20 +1,16 @@
 from sdk import AsyncFMC
 from sdk.exceptions import AsyncFMCError
-from manager import FMCManager
+from manager import manager
 from fastmcp import FastMCP, Context
 from fastmcp.exceptions import ToolError
 from itertools import chain
 
-class Device:
-    mcp = FastMCP(
-        name = "SecureFirewallDevice",
-        instructions = """
-            EXPAND
-        """
-    )
-    fmc_manager: FMCManager = None
-
-device = Device()
+device = FastMCP(
+    name = "SecureFirewallDevice",
+    instructions = """
+        EXPAND
+    """
+)
 
 async def register_device_tools(mcp: FastMCP) -> None:
     """
@@ -24,9 +20,9 @@ async def register_device_tools(mcp: FastMCP) -> None:
     Returns:
         main MCP server with added endpoints
     """
-    await mcp.import_server(device.mcp)
+    await mcp.import_server(device)
 
-@device.mcp.tool(
+@device.tool(
     name = "getDeviceByName",
     description = "Retrieves a device from Cisco Secure Firewall by name."
 )
@@ -42,20 +38,20 @@ async def get_device(
     Returns:
         API response data
     """
-    fmc: AsyncFMC | None = await device.fmc_manager.select_fmc_by_device_name(device_name)
+    fmc: AsyncFMC | None = await manager.select_fmc_by_device_name(device_name)
     if fmc:
         return await fmc.get_device_by_name(device_name)
-    for fmc in device.fmc_manager.fmc_list:
+    for fmc in manager.fmc_list:
         try:
             data = await fmc.get_device_by_name(device_name)
-            await device.fmc_manager.update_standalone_cache(data)
+            await manager.update_standalone_cache(data)
             return data
         except AsyncFMCError:
             pass
     raise ToolError
 
 # TODO - add domain_name as optional user input in same fashion as `fmc_host` 
-@device.mcp.tool(
+@device.tool(
     name = "getAllDevices",
     description = "Retrieves all devices from Cisco Secure Firewall."
 )
@@ -73,11 +69,11 @@ async def get_all_devices(
     """
     # Indicates they want to collect for a specific FMC
     if fmc_host:
-        fmc = [fmc for fmc in device.fmc_manager.fmc_list if fmc.host.strip("https://") == fmc_host]
+        fmc = [fmc for fmc in manager.fmc_list if fmc.host.strip("https://") == fmc_host]
         # fmc[0] = AsyncSDK from list comprehension result
         return await fmc[0].get_all_devices()
     response = list([])
-    for fmc in device.fmc_manager.fmc_list:
+    for fmc in manager.fmc_list:
         try:
             response.extend(await fmc.get_all_devices())
             ctx.info(f"Gathering devices for {fmc.host}")

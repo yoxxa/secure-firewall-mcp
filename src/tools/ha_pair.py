@@ -2,18 +2,14 @@ from sdk import AsyncFMC
 from sdk.exceptions import AsyncFMCError
 from fastmcp import FastMCP, Context
 from fastmcp.exceptions import ToolError
-from manager import FMCManager
+from manager import manager
 
-class HAPair:
-    mcp = FastMCP(
-        name = "SecureFirewallHAPair",
-        instructions = """
-            EXPAND
-        """
-    )
-    fmc_manager: FMCManager = None
-
-ha_pair = HAPair()
+ha_pair = FastMCP(
+    name = "SecureFirewallHAPair",
+    instructions = """
+        EXPAND
+    """
+)
 
 async def register_ha_pair_tools(mcp: FastMCP) -> None:
     """
@@ -23,9 +19,9 @@ async def register_ha_pair_tools(mcp: FastMCP) -> None:
     Returns:
         main MCP server with added endpoints
     """
-    await mcp.import_server(ha_pair.mcp)
+    await mcp.import_server(ha_pair)
 
-@ha_pair.mcp.tool(
+@ha_pair.tool(
     name = "getHAPairByName",
     description = "Retrieves a HA pair from Cisco Secure Firewall by name."
 )
@@ -41,10 +37,10 @@ async def get_ha_pair(
     Returns:
         API response data
     """
-    fmc: AsyncFMC | None = await ha_pair.fmc_manager.select_fmc_by_device_name(device_name)
+    fmc: AsyncFMC | None = await manager.select_fmc_by_device_name(device_name)
     if fmc:
         return await fmc.get_device_by_name(device_name)
-    for fmc in ha_pair.fmc_manager.fmc_list:
+    for fmc in manager.fmc_list:
         try:
             data = await fmc.get_ha_pair_by_name(device_name)
             # TODO - build update_ha_cache() and change this
@@ -54,7 +50,7 @@ async def get_ha_pair(
             pass
     raise ToolError
 
-@ha_pair.mcp.tool(
+@ha_pair.tool(
     name = "getAllHAPairs",
     description = "Retrieves all devices from Cisco Secure Firewall."
 )
@@ -72,11 +68,11 @@ async def get_all_ha_pairs(
     # TODO - fix below if statement
     # Indicates they want to collect for a specific FMC
     if fmc_host:
-        fmc = [fmc for fmc in ha_pair.fmc_manager.fmc_list if fmc.host.strip("https://") == fmc_host]
+        fmc = [fmc for fmc in manager.fmc_list if fmc.host.strip("https://") == fmc_host]
         # fmc[0] = AsyncSDK from list comprehension result
         return await fmc[0].get_all_ha_pairs()
     response = list([])
-    for fmc in ha_pair.fmc_manager.fmc_list:
+    for fmc in manager.fmc_list:
         try:
             response.extend(await fmc.get_all_ha_pairs())
             ctx.info(f"Gathering devices for {fmc.host}")

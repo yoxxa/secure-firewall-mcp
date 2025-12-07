@@ -1,18 +1,14 @@
 from sdk.exceptions import AsyncFMCError
 from fastmcp import FastMCP, Context
 from fastmcp.exceptions import ToolError
-from sdk.manager import FMCManager
+from manager import manager
 
-class AuditLog:
-    mcp = FastMCP(
-        name = "SecureFirewallAuditLog",
-        instructions = """
-            EXPAND
-        """
-    )
-    fmc_manager: FMCManager = None
-
-audit_log = AuditLog()
+audit_log = FastMCP(
+    name = "SecureFirewallAuditLog",
+    instructions = """
+        EXPAND
+    """
+)
 
 async def register_audit_log_tools(mcp: FastMCP) -> None:
     """
@@ -22,9 +18,9 @@ async def register_audit_log_tools(mcp: FastMCP) -> None:
     Returns:
         main MCP server with added endpoints
     """
-    await mcp.import_server(audit_log.mcp)
+    await mcp.import_server(audit_log)
 
-@audit_log.mcp.tool(
+@audit_log.tool(
     name = "getAllAuditLogs",
     description = "Retrieves all health alerts from an FMC."
 )
@@ -40,7 +36,7 @@ async def get_audit_log(
     Returns:
         API response data
     """
-    for fmc in audit_log.fmc_manager.fmc_list:
+    for fmc in manager.fmc_list:
         try:
             ctx.info(f"Gathering audit log for {domain_uuid}")
             return await fmc.get_audit_records(

@@ -63,3 +63,5 @@ class FMCManager:
     async def init(self) -> None:
         await self.add_fmc_from_yaml()
         await self.run_initial_cache_collect()
+
+manager = FMCManager()
