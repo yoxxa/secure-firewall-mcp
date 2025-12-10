@@ -1,4 +1,5 @@
 from sdk import AsyncFMC
+from sdk.exceptions import AsyncFMCError
 from manager.cache import Cache
 from asyncio import Lock
 from yaml import load, Loader
@@ -36,11 +37,6 @@ class FMCManager:
                     )
                 )
 
-    async def update_standalone_cache(self, data: dict) -> None: 
-        await self.cache.update_standalone_df(
-            data
-        )
-
     async def select_fmc_by_device_name(self, device_name: str) -> AsyncFMC | None:
         filtered_df = self.cache.data["standalone"].filter(
             (pl.col("device_name") == device_name),
@@ -50,15 +46,37 @@ class FMCManager:
             return None
         for fmc in self.fmc_list:
             if fmc.host.strip("https://") == filtered_df["fmc_host"][0]:
-                print("RETURNING FMC OBJ")
                 return fmc
             
+    async def select_fmc_by_ha_pair_name(self, ha_pair_name: str) -> AsyncFMC | None:
+        filtered_df = self.cache.data["ha_pair"].filter(
+            (pl.col("ha_pair_name") == ha_pair_name),
+        )
+        # Indicates not found on any FMCs in cache
+        if filtered_df.is_empty():
+            return None
+        for fmc in self.fmc_list:
+            if fmc.host.strip("https://") == filtered_df["fmc_host"][0]:
+                return fmc
+            
+    # TODO - add HA and Cluster
+    # TODO - remove this for loop and just set a variable to load all at same time rather than 1 by 1
     async def run_initial_cache_collect(self) -> None:
         for fmc in self.fmc_list:
-            for device in await fmc.get_all_devices():
-                await self.update_standalone_cache(
-                    device
-                )
+            try:
+                for device in await fmc.get_all_devices():
+                    await self.cache.extend_standalone_df(
+                        device
+                    )
+            except AsyncFMCError:
+                continue
+            try:
+                for ha_pair in await fmc.get_all_ha_pairs():
+                    await self.cache.extend_ha_pair_df(
+                        ha_pair
+                    )
+            except AsyncFMCError:
+                continue
 
     async def init(self) -> None:
         await self.add_fmc_from_yaml()

@@ -16,8 +16,11 @@ class Cache:
             ),
             "ha_pair": pl.DataFrame(
                 schema=[
-                    ("name", pl.String), 
-                    ("uuid", pl.String)
+                    ("fmc_host", pl.String),
+                    ("ha_pair_name", pl.String),
+                    ("ha_pair_uuid", pl.String),
+                    ("primary_device", pl.String),
+                    ("secondary_device", pl.String)
                 ]
             ),
             "cluster": pl.DataFrame(
@@ -28,7 +31,7 @@ class Cache:
             )
         })
 
-    async def update_standalone_df(self, data: dict) -> None:
+    async def extend_standalone_df(self, data: dict) -> None:
         df = pl.DataFrame({
             "fmc_host": [data["links"]["self"].strip("https://").split("/")[0]],
             "device_name": [data["name"]],
@@ -39,3 +42,13 @@ class Cache:
             "acp_uuid": [data["accessPolicy"]["id"]]
         })
         self.data["standalone"].extend(df)
+
+    async def extend_ha_pair_df(self, data: dict) -> None:
+        df = pl.DataFrame({
+            "fmc_host": [data["links"]["self"].strip("https://").split("/")[0]],
+            "ha_pair_name": [data["name"]],
+            "ha_pair_uuid": [data["id"]],
+            "primary_device": [data["primary"]["name"]],
+            "secondary_device": [data["secondary"]["name"]]
+        })
+        self.data["ha_pair"].extend(df)
