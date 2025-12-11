@@ -31,6 +31,7 @@ async def get_all_job_history(
     """
     Gathers all job history on an FMC  
     Args:
+        fmc_host: FMC to gather job history from
         ctx: MCP context
     Returns:
         API response data

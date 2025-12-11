@@ -32,7 +32,7 @@ async def get_ha_pair(
     """
     Gathers a specific HA pair by name i.e. PERTH-FW 
     Args:
-        device_name: name of device to collect
+        ha_pair_name: name of device to collect
         ctx: MCP context
     Returns:
         API response data
@@ -60,6 +60,7 @@ async def get_all_ha_pairs(
     """
     Gathers all devices from FMC.
     Args:
+        fmc_host: FMC to gather HA pairs from
         ctx: MCP context
     Returns:
         API response data

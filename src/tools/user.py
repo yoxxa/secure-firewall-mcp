@@ -31,6 +31,7 @@ async def get_users(
     """
     Gathers all users on an FMC  
     Args:
+        fmc_host: FMC to gather hosts from
         ctx: MCP context
     Returns:
         API response data

@@ -29,7 +29,7 @@ async def get_all_health_alerts(
     ctx: Context | None = None
 ) -> list:
     """
-    Gathers all red and yellow health alerts for a domain, i.e. Tokyo 
+    Gathers all red and yellow health alerts for a FMC, i.e. Tokyo-FMC 
     Args:
         device_name: name of device to collect
         ctx: MCP context
