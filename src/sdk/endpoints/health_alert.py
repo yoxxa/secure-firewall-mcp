@@ -2,9 +2,6 @@ from sdk.core.utilities import SDKUtilities
 from sdk.exceptions import AsyncFMCError
 
 class HealthAlertSDK(SDKUtilities):
-    def __init__(self) -> None:
-        pass
-
     async def get_all_health_alerts(self) -> list[dict]:
         """
         Retrieves all red and yellow health alerts for global domain.

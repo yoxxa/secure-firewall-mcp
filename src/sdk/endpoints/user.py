@@ -1,12 +1,7 @@
-#/api/fmc_config/v1/domain/{domainUUID}/users/users
-
 from sdk.core.utilities import SDKUtilities
 from sdk.exceptions import AsyncFMCError
 
 class UserSDK(SDKUtilities):
-    def __init__(self) -> None:
-        pass
-        
     async def get_all_users(
         self
     ) -> list[dict]:

@@ -2,9 +2,6 @@ from sdk.core.utilities import SDKUtilities
 from sdk.exceptions import AsyncFMCError
 
 class DomainSDK(SDKUtilities):
-    def __init__(self) -> None:
-        pass
-
     async def set_global_domain(self) -> None:
         """
         Retrieves the global domain from FMC and caches it in a class variable.

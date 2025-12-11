@@ -2,9 +2,6 @@ from sdk.core.utilities import SDKUtilities
 from sdk.exceptions import AsyncFMCError
 
 class HAPairSDK(SDKUtilities):
-    def __init__(self) -> None:
-        pass
-  
     async def get_ha_pair_by_name(
         self, 
         device_name: str

@@ -2,9 +2,6 @@ from sdk.core.utilities import SDKUtilities
 from sdk.exceptions import AsyncFMCError
 
 class DeviceSDK(SDKUtilities):
-    def __init__(self) -> None:
-        pass
-  
     async def get_device_by_name(
         self, 
         device_name: str
