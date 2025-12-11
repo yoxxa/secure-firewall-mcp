@@ -47,7 +47,7 @@ async def main():
     await app.register_tools()
     await app.mcp.run_async(
         transport="http",
-        host="127.0.0.1",
+        host="0.0.0.0",
         port=8080,
     )
 
