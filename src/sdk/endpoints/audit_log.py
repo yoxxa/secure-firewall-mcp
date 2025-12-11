@@ -2,9 +2,6 @@ from sdk.core.utilities import SDKUtilities
 from sdk.exceptions import AsyncFMCError
 
 class AuditLogSDK(SDKUtilities):
-    def __init__(self) -> None:
-        pass
-
     async def get_audit_records(self, domain_uuid: str) -> list[dict]:
         """
         Retrieves all audit records for a domain.
