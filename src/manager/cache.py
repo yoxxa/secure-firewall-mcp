@@ -1,6 +1,9 @@
 import polars as pl
 
 class Cache:
+    """
+    Caches data for searching and selecting `AsyncFMC`
+    """
     def __init__(self):
         self.data = dict({
             "standalone": pl.DataFrame(
@@ -32,6 +35,11 @@ class Cache:
         })
 
     async def extend_standalone_df(self, data: dict) -> None:
+        """
+        Extends the cache standalone FTD df to include this device
+        Args:
+            data: data from `device` endpoint
+        """
         df = pl.DataFrame({
             "fmc_host": [data["links"]["self"].strip("https://").split("/")[0]],
             "device_name": [data["name"]],
@@ -44,6 +52,11 @@ class Cache:
         self.data["standalone"].extend(df)
 
     async def extend_ha_pair_df(self, data: dict) -> None:
+        """
+        Extends the cache HA pair df to include this device
+        Args:
+            data: data from `ha_pair` endpoint
+        """
         df = pl.DataFrame({
             "fmc_host": [data["links"]["self"].strip("https://").split("/")[0]],
             "ha_pair_name": [data["name"]],
