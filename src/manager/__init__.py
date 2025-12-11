@@ -59,6 +59,9 @@ class FMCManager:
             if fmc.host.strip("https://") == filtered_df["fmc_host"][0]:
                 return fmc
             
+    async def select_fmc_by_fmc_host(self, fmc_host: str) -> list[AsyncFMC]:
+        return [fmc for fmc in self.fmc_list if fmc.host.strip("https://") == fmc_host]
+
     # TODO - add HA and Cluster
     # TODO - remove this for loop and just set a variable to load all at same time rather than 1 by 1
     async def run_initial_cache_collect(self) -> None:
