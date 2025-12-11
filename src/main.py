@@ -11,6 +11,7 @@ from fastmcp import FastMCP
 import asyncio
 from dotenv import load_dotenv
 import os
+from starlette.responses import JSONResponse
 
 load_dotenv(
     dotenv_path = "src/creds/.env"
@@ -20,15 +21,22 @@ class App:
     """
     App container stores primary FastMCP server and FMCManager objects
     """
-    def __init__(self):
-        self.mcp = FastMCP(
-            name = "CiscoSecureFirewall",
-            instructions = """
-                This server provides tools for interfacing with the Cisco Secure Firewall API
-                Use ....
-            """
-        )
-        self.fmc_manager = manager
+    mcp = FastMCP(
+        name = "CiscoSecureFirewall",
+        instructions = """
+            This server provides tools for interfacing with the Cisco Secure Firewall API
+            Use ....
+        """
+    )
+    fmc_manager = manager
+    
+    @mcp.custom_route("/health", methods=["GET"])
+    async def health_check(request):
+        return JSONResponse({
+            "status": "healthy",
+            "service": "secure-firewall-mcp",
+            "version": "2025-11-13"
+        })
 
     async def register_tools(self) -> None:
         """
