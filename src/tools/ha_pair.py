@@ -26,7 +26,7 @@ async def register_ha_pair_tools(mcp: FastMCP) -> None:
     description = "Retrieves a HA pair from Cisco Secure Firewall by name."
 )
 async def get_ha_pair(
-    device_name: str,
+    ha_pair_name: str,
     ctx: Context | None = None
 ) -> dict:
     """
@@ -37,14 +37,13 @@ async def get_ha_pair(
     Returns:
         API response data
     """
-    fmc: AsyncFMC | None = await manager.select_fmc_by_device_name(device_name)
+    fmc: AsyncFMC | None = await manager.select_fmc_by_ha_pair_name(ha_pair_name)
     if fmc:
-        return await fmc.get_device_by_name(device_name)
+        return await fmc.get_ha_pair_by_name(ha_pair_name)
     for fmc in manager.fmc_list:
         try:
-            data = await fmc.get_ha_pair_by_name(device_name)
-            # TODO - build update_ha_cache() and change this
-            #await ha_pair.fmc_manager.update_standalone_cache(data)
+            data = await fmc.get_ha_pair_by_name(ha_pair_name)
+            await manager.cache.extend_ha_pair_df(data)
             return data
         except AsyncFMCError:
             pass
@@ -65,10 +64,9 @@ async def get_all_ha_pairs(
     Returns:
         API response data
     """
-    # TODO - fix below if statement
     # Indicates they want to collect for a specific FMC
     if fmc_host:
-        fmc = [fmc for fmc in manager.fmc_list if fmc.host.strip("https://") == fmc_host]
+        fmc = await manager.select_fmc_by_fmc_host(fmc_host)
         # fmc[0] = AsyncSDK from list comprehension result
         return await fmc[0].get_all_ha_pairs()
     response = list([])

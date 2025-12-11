@@ -24,7 +24,7 @@ async def register_health_alert_tools(mcp: FastMCP) -> None:
     name = "getAllHealthAlerts",
     description = "Retrieves all health alerts from an FMC."
 )
-async def get_health_alerts(
+async def get_all_health_alerts(
     fmc_host: str | None = None,
     ctx: Context | None = None
 ) -> list:
@@ -37,7 +37,7 @@ async def get_health_alerts(
         API response data
     """
     if fmc_host:
-        fmc = [fmc for fmc in manager.fmc_list if fmc.host.strip("https://") == fmc_host]
+        fmc = manager.select_fmc_by_fmc_host(fmc_host)
         # fmc[0] = AsyncSDK from list comprehension result
         return await fmc[0].get_all_health_alerts()
     response = list([])

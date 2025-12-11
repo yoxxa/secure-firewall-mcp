@@ -25,6 +25,7 @@ async def register_user_tools(mcp: FastMCP) -> None:
     description = "Retrieves all users from Cisco Secure Firewall."
 )
 async def get_users(
+    fmc_host: str | None = None,
     ctx: Context | None = None
 ) -> list[dict]:
     """
@@ -34,9 +35,15 @@ async def get_users(
     Returns:
         API response data
     """
+    if fmc_host:
+        fmc = manager.select_fmc_by_fmc_host(fmc_host)
+        # fmc[0] = AsyncSDK from list comprehension result
+        return await fmc[0].get_all_users()
+    response = list([])
     for fmc in manager.fmc_list:
         try:
-            ctx.info("Gathered FMC domains")
-            return await fmc.get_all_users()
+            response.extend(await fmc.get_all_job_history())
+            ctx.info(f"Gathering devices for {fmc.host}")
         except AsyncFMCError:
-            raise ToolError
+            pass
+    return response

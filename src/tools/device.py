@@ -44,7 +44,7 @@ async def get_device(
     for fmc in manager.fmc_list:
         try:
             data = await fmc.get_device_by_name(device_name)
-            await manager.update_standalone_cache(data)
+            await manager.cache.extend_standalone_df(data)
             return data
         except AsyncFMCError:
             pass
@@ -70,7 +70,7 @@ async def get_all_devices(
     # Indicates they want to collect for a specific FMC
     if fmc_host:
         try:
-            fmc = [fmc for fmc in manager.fmc_list if fmc.host.strip("https://") == fmc_host]
+            fmc = await manager.select_fmc_by_fmc_host(fmc_host)
             # fmc[0] = AsyncSDK from list comprehension result
             return await fmc[0].get_all_devices()
         except:
