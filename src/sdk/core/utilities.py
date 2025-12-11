@@ -3,6 +3,9 @@ from httpx import HTTPStatusError, ConnectTimeout, RequestError, Response
 from requests.auth import HTTPBasicAuth
 
 class SDKUtilities:
+    """
+    Core utilities required for SDK operations like authentication and request building
+    """
     def __init__(self) -> None:
         pass
 
@@ -21,7 +24,7 @@ class SDKUtilities:
 
     async def _invalidate_token(self) -> None:
         """
-        Invalidate existing underlying stored API token.
+        Invalidate existing stored API token.
         """
         async with self._lock:
             self._token = None
@@ -29,9 +32,7 @@ class SDKUtilities:
     # Depending on if we do the data structure with multiple FMCs, likely will need to revise auth strategy.
     async def _authenticate(self) -> None:
         """
-        Retrieves a fresh API token from FMC.
-        Returns:
-            A str for the API token required for subsequent requests.
+        Retrieves a fresh API token from FMC and sets the new token.
         """
         async with self._lock:
             # Deals with race condition where request 401's and token changed prior to request
@@ -48,6 +49,16 @@ class SDKUtilities:
         retries: int = 5,
         timeout: int = 10
     ) -> Response:
+        """
+        Manages creation and selection of multiple AsyncFMC objects
+        Args:
+            url: FMC endpoint to gather data from
+            params: parameters to pass into request
+            retries: number of times to retry request before failing
+            timeout: time to wait on request before failing
+        Returns:
+            Response object with data from request
+        """
         # Add default parameters
         if params == None:
             params = dict({"limit": 1000, "expanded": True})

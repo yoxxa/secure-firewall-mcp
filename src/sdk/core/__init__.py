@@ -15,5 +15,8 @@ class CoreFMC(
     HAPairSDK,
     JobHistorySDK
 ):
+    """
+    Used for composition with AsyncFMC object
+    """
     def __init__(self) -> None:
         pass

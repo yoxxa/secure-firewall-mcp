@@ -9,10 +9,6 @@ import polars as pl
 class FMCManager:
     """
     Manages creation and selection of multiple AsyncFMC objects
-    Args:
-        host: FMC host to gather data from API
-        username: FMC user who will call API
-        password: Password of FMC user
     """
     def __init__(self) -> None:      
         self.fmc_list = list()
