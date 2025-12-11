@@ -18,7 +18,7 @@ async def test_get_device_by_name_good_input(
     result = await mcp_client.call_tool(
         name="getHAPairByName", arguments=
         {
-            "device_name": device_name
+            "ha_pair_name": device_name
         }
     )
     assert isinstance(result.data, dict)
@@ -38,7 +38,7 @@ async def test_get_device_by_name_bad_input(
         result = await mcp_client.call_tool(
             name="getHAPairByName", arguments=
             {
-                "device_name": device_name
+                "ha_pair_name": device_name
             }
         )
 
