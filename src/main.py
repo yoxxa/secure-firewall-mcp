@@ -17,6 +17,9 @@ load_dotenv(
 )
 
 class App:
+    """
+    App container stores primary FastMCP server and FMCManager objects
+    """
     def __init__(self):
         self.mcp = FastMCP(
             name = "CiscoSecureFirewall",
@@ -29,11 +32,7 @@ class App:
 
     async def register_tools(self) -> None:
         """
-        Extends main MCP server to include `domain` tools
-        Args:
-            mcp: the main MCP server to extend
-        Returns:
-            main MCP server with added endpoints
+        Extends main MCP server to include all other tools
         """
         await register_device_tools(self.mcp)
         await register_health_alert_tools(self.mcp)
