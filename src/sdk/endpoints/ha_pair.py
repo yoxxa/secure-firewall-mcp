@@ -9,6 +9,15 @@ class HAPairSDK(SDKUtilities):
         self, 
         device_name: str
     ) -> dict:
+        """
+        Gathers HA pairs matching `device_name` from an FMC
+        Args:
+            device_name: HA pairs to gather data from API
+        Returns:
+            device: dict of HA pair
+        Raises:
+            AsyncFMCError: 404, HA pair not found
+        """
         response = await self._request(
             url = f"/api/fmc_config/v1/domain/{self.global_domain_uuid}/devicehapairs/ftddevicehapairs",
         )
@@ -20,6 +29,11 @@ class HAPairSDK(SDKUtilities):
     async def get_all_ha_pairs(
         self
     ) -> list[dict]:
+        """
+        Gathers all HA pairs from an FMC
+        Returns:
+            list[dict] of HA pairs
+        """
         response = await self._request(
             url = f"/api/fmc_config/v1/domain/{self.global_domain_uuid}/devicehapairs/ftddevicehapairs"
         )
