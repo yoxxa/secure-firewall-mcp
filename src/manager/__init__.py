@@ -1,10 +1,13 @@
 from sdk import AsyncFMC
 from sdk.exceptions import AsyncFMCError
 from manager.cache import Cache
+from manager.exceptions import FMCManagerError
 from asyncio import Lock
 from yaml import load, Loader
 import os
 import polars as pl
+from httpx import ConnectTimeout
+from logging import Logger
 
 class FMCManager:
     """
@@ -14,6 +17,7 @@ class FMCManager:
         self.fmc_list = list()
         self._lock = Lock()
         self.cache = Cache()
+        self.logger = Logger("fmc_manager")
 
     async def add_fmc(self, fmc: AsyncFMC) -> None:
         """
@@ -22,10 +26,17 @@ class FMCManager:
             fmc: FMC host to add to manager
         """
         async with self._lock:
-            await fmc.set_global_domain()
-            self.fmc_list.append(
-                fmc
-            )
+            try:
+                await fmc.set_global_domain()
+                self.fmc_list.append(
+                    fmc
+                )
+            # Logs when FMC does not successfully get appended to fmc_list
+            # TODO - handle 
+            except ConnectTimeout:
+                #raise FMCManagerError(f"Failed to connect to host: {fmc.host}")
+                self.logger.error(f"Failed to connect to host: {fmc.host}")
+                pass
 
     async def get_fmc_list(self) -> list[AsyncFMC]:
         return self.fmc_list
