@@ -34,9 +34,7 @@ class FMCManager:
             # Logs when FMC does not successfully get appended to fmc_list
             # TODO - handle 
             except ConnectTimeout:
-                #raise FMCManagerError(f"Failed to connect to host: {fmc.host}")
-                self.logger.error(f"Failed to connect to host: {fmc.host}")
-                pass
+                raise FMCManagerError(f"Failed to connect to host: {fmc.host}")
 
     async def get_fmc_list(self) -> list[AsyncFMC]:
         return self.fmc_list
