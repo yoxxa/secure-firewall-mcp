@@ -31,8 +31,7 @@ class FMCManager:
                 self.fmc_list.append(
                     fmc
                 )
-            # Logs when FMC does not successfully get appended to fmc_list
-            # TODO - handle 
+            # Errors when FMC does not successfully get appended to fmc_list 
             except ConnectTimeout:
                 raise FMCManagerError(f"Failed to connect to host: {fmc.host}")
 
