@@ -92,6 +92,7 @@ class FMCManager:
             if fmc.host.strip("https://") == filtered_df["fmc_host"][0]:
                 return fmc
             
+    # TODO - refactor to return [0]
     async def select_fmc_by_fmc_host(self, fmc_host: str) -> list[AsyncFMC]:
         """
         Select an FMC by searching the FMC list for a matching FMC name 
@@ -124,11 +125,16 @@ class FMCManager:
             except AsyncFMCError:
                 continue
 
+    async def check_fmc_list_not_empty(self) -> None:
+        if not self.fmc_list:
+            raise FMCManagerError("FMC host list empty, must set hosts in `fmc_hosts.yaml`")
+
     async def init(self) -> None:
         """
         Initialise all required data before running the main MCP server
         """
         await self.add_fmc_from_yaml()
+        await self.check_fmc_list_not_empty()
         await self.run_initial_cache_collect()
 
 manager = FMCManager()
