@@ -6,7 +6,37 @@ from manager import manager
 job_history = FastMCP(
     name = "SecureFirewallJobHistory",
     instructions = """
-        EXPAND
+## Purpose
+Track and retrieve historical job execution records from FMC instances. These tools provide visibility into deployment tasks, scheduled operations, and their success/failure status.
+
+## Available Tools
+
+### getAllJobHistory
+Retrieve job execution history for a specific FMC instance.
+
+**Parameters**:
+- `fmc_host` (optional): FMC hostname or IP
+
+**When to Use**:
+- User asks about deployments or tasks
+- Investigating failed operations
+- Reviewing deployment schedule
+- Tracking specific job execution
+
+**Returns**:
+- Job ID and name
+- Job type (deployment, backup, task, etc.)
+- Status (Success/Failed/Pending/In Progress)
+- Start and end timestamps
+- Duration
+- User who initiated job
+- Target devices (if applicable)
+- Error messages (if failed)
+
+**Example Queries**:
+- "Show me job history for FMC-PROD"
+- "What deployments ran yesterday?"
+- "List all failed jobs this week"
     """
 )
 

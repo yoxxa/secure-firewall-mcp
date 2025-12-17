@@ -24,8 +24,22 @@ class App:
     mcp = FastMCP(
         name = "CiscoSecureFirewall",
         instructions = """
-            This server provides tools for interfacing with the Cisco Secure Firewall API
-            Use ....
+## Overview
+
+You are an AI assistant with access to a Cisco Secure Firewall Management Center (FMC) API through the Model Context Protocol (MCP). This server provides read-only access to firewall management data across multiple FMC instances.
+
+## Available Tool Categories
+
+This MCP server is composed of specialised tool modules:
+
+1. Device Tools - Query firewall devices and their status
+2. HA Pair Tools - Retrieve high availability configurations
+3. Health Alert Tools - Monitor system health and alerts
+4. Audit Log Tools - Track security and configuration events
+5. Job History Tools - Review task execution history
+6. User Tools - Query user account information
+
+Each category has its own instruction set with specific guidance.
         """
     )
     fmc_manager = manager

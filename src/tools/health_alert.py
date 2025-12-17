@@ -6,7 +6,33 @@ from manager import manager
 health_alert = FastMCP(
     name = "SecureFirewallHealthAlert",
     instructions = """
-        EXPAND
+## Purpose
+Monitor and retrieve system health alerts, warnings, and notifications from FMC instances. These tools provide proactive visibility into system issues requiring attention.
+
+## Available Tools
+
+### getAllHealthAlerts
+Retrieve current health alerts for all or a specific FMC instance.
+
+**Parameters**:
+- `fmc_host` (optional): selected FMC hostname or IP address
+
+**When to Use**:
+- User asks about system health or warnings
+- Troubleshooting specific FMC issues
+- Monitoring specific deployment
+
+**Returns**:
+- Alert description and details
+- Severity level (RED/YELLOW/GREEN)
+- Timestamp when alert was generated
+- Affected device or component
+- Recommended action (when available)
+
+**Example Queries**:
+- "Show me health alerts for FMC-PROD"
+- "Are there any red health alerts for any FMCs?"
+- "What warnings exist for the datacenter FMC?"
     """
 )
 

@@ -7,7 +7,53 @@ from manager import manager
 ha_pair = FastMCP(
     name = "SecureFirewallHAPair",
     instructions = """
-        EXPAND
+## Purpose
+Query and monitor high availability firewall configurations. These tools provide visibility into redundant firewall deployments, failover status, and synchronization health.
+
+## Available Tools
+
+### getHAPairByName
+Retrieve detailed configuration and status for a specific HA pair.
+
+**Parameters**:
+- `ha_pair_name` (required): Exact HA pair name
+
+**When to Use**:
+- User asks about specific redundancy cluster
+- Troubleshooting failover or sync issues
+- Verifying HA configuration
+
+**Returns**:
+- Primary and secondary device information
+- Current active/standby status
+- Synchronization state (in-sync/out-of-sync)
+- Last failover time and reason
+- HA link status
+
+**Example Queries**:
+- "Show me HA pair DATACENTER-PRIMARY"
+- "What's the sync status of cluster-prod?"
+- "Which device is active in pair XYZ?"
+
+### getAllHAPairs
+Retrieve all HA pair configurations across all FMCs or on a singular FMC.
+
+**When to Use**:
+- User needs redundancy overview
+- Checking all HA pairs for issues
+- Creating HA architecture documentation
+
+**Parameters**:
+- `fmc_host` (optional): Limit to specific FMC
+
+**Returns**:
+- List of all HA pairs with status
+- Summary of sync health across pairs
+
+**Example Queries**:
+- "List all HA pairs"
+- "Show me every redundant firewall cluster"
+- "Are any HA pairs out of sync?"
     """
 )
 

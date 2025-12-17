@@ -8,7 +8,54 @@ from itertools import chain
 device = FastMCP(
     name = "SecureFirewallDevice",
     instructions = """
-        EXPAND
+## Purpose
+Query and retrieve information about firewall devices managed by FMC instances. These tools provide visibility into your firewall infrastructure's inventory, status, and configuration.
+
+## Available Tools
+
+### getDeviceByName
+Retrieve detailed information about a specific firewall device.
+
+**Parameters**:
+- `device_name` (required): Exact device name (case-sensitive)
+
+**When to Use**:
+- User asks about a specific FTD by name
+- Need detailed status for troubleshooting
+- Verifying device configuration or version
+
+**Returns**:
+- Device name, model, software version
+- Management IP address and connectivity status
+- Online/offline status, last check-in time
+- Associated domain and access policy
+- License information
+
+**Example Queries**:
+- "Show me details for device FW-DATACENTER-01"
+- "What version is running on firewall-production?"
+- "Is device XYZ online?"
+
+### getAllDevices
+Retrieve all devices across all configured FMC instances or a specific FMC instance.
+
+**Parameters**:
+- `fmc_host` (optional): Limit to specific FMC
+
+**When to Use**:
+- User needs infrastructure overview
+- Creating device inventory
+- Finding devices matching certain criteria
+- User doesn't know exact device name
+
+**Returns**:
+- List of all managed devices with key attributes
+- Summary statistics (total, online, offline)
+
+**Example Queries**:
+- "List all firewalls"
+- "Show me every device managed by FMC-DC"
+- "Which devices are offline?"
     """
 )
 

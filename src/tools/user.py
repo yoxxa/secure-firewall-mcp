@@ -6,7 +6,36 @@ from manager import manager
 user = FastMCP(
     name = "SecureFirewallUser",
     instructions = """
-        EXPAND
+## Purpose
+Retrieve local user account information, access details, and role assignments across FMC instances. These tools support access audits, account management, and security reviews.
+
+## Available Tools
+
+### getAllUsers
+Retrieve detailed information for a specific user account.
+
+**Parameters**:
+- `fmc_host` (optional): Specific FMC to query
+
+**When to Use**:
+- User asks about specific account
+- Investigating access or permissions
+- Verifying account status
+- Security review of individual user
+
+**Returns**:
+- Username and display name
+- Email address
+- Assigned roles and permissions
+- Account status (active/disabled)
+- Last login timestamp
+- Account creation date
+- Associated domain(s)
+
+**Example Queries**:
+- "Show me details for user jsmith"
+- "What permissions does admin have?"
+- "When did user firewall-ops last login?"
     """
 )
 
