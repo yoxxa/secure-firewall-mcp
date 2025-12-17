@@ -71,8 +71,7 @@ async def get_all_devices(
     if fmc_host:
         try:
             fmc = await manager.select_fmc_by_fmc_host(fmc_host)
-            # fmc[0] = AsyncSDK from list comprehension result
-            return await fmc[0].get_all_devices()
+            return await fmc.get_all_devices()
         except:
             raise AsyncFMCError(f"Cannot return all devices for {fmc_host}")
     response = list([])

@@ -38,8 +38,7 @@ async def get_all_job_history(
     """
     if fmc_host:
         fmc = manager.select_fmc_by_fmc_host(fmc_host)
-        # fmc[0] = AsyncSDK from list comprehension result
-        return await fmc[0].get_all_ha_pairs()
+        return await fmc.get_all_ha_pairs()
     response = list([])
     for fmc in manager.fmc_list:
         try:

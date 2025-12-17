@@ -68,8 +68,7 @@ async def get_all_ha_pairs(
     # Indicates they want to collect for a specific FMC
     if fmc_host:
         fmc = await manager.select_fmc_by_fmc_host(fmc_host)
-        # fmc[0] = AsyncSDK from list comprehension result
-        return await fmc[0].get_all_ha_pairs()
+        return await fmc.get_all_ha_pairs()
     response = list([])
     for fmc in manager.fmc_list:
         try:

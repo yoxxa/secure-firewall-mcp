@@ -101,7 +101,7 @@ class FMCManager:
         Returns:
             list of AsyncFMC, where [0] equals matching FMC
         """
-        return [fmc for fmc in self.fmc_list if fmc.host.strip("https://") == fmc_host]
+        return [fmc for fmc in self.fmc_list if fmc.host.strip("https://") == fmc_host][0]
 
     # TODO - add HA and Cluster
     # TODO - remove this for loop and just set a variable to load all at same time rather than 1 by 1
