@@ -44,7 +44,7 @@ async def get_device(
     for fmc in manager.fmc_list:
         try:
             data = await fmc.get_device_by_name(device_name)
-            await manager.cache.extend_standalone_df(data)
+            await manager.add_standalone_to_cache(data)
             return data
         except AsyncFMCError:
             pass

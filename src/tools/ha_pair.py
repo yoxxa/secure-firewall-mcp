@@ -43,7 +43,7 @@ async def get_ha_pair(
     for fmc in manager.fmc_list:
         try:
             data = await fmc.get_ha_pair_by_name(ha_pair_name)
-            await manager.cache.extend_ha_pair_df(data)
+            await manager.add_ha_pair_to_cache(data)
             return data
         except AsyncFMCError:
             pass

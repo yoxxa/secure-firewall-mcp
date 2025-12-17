@@ -137,4 +137,26 @@ class FMCManager:
         await self.check_fmc_list_not_empty()
         await self.run_initial_cache_collect()
 
+    async def add_standalone_to_cache(self, data: dict) -> None:
+        """
+        Adds a standalone FTD device to the Cache of FMCManager
+        Args:
+            data: standalone FTD device to add to cache
+        """
+        async with self._lock:
+            await self.cache.extend_standalone_df(
+                data
+            )
+
+    async def add_ha_pair_to_cache(self, data: dict) -> None:
+        """
+        Adds a HA pair to the Cache of FMCManager
+        Args:
+            data: HA pair to add to cache
+        """
+        async with self._lock:
+            await self.cache.extend_ha_pair_df(
+                data
+            )
+
 manager = FMCManager()
