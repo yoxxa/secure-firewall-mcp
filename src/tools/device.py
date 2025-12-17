@@ -40,9 +40,13 @@ async def get_device(
     """
     fmc: AsyncFMC | None = await manager.select_fmc_by_device_name(device_name)
     if fmc:
-        return await fmc.get_device_by_name(device_name)
+        try:
+            return await fmc.get_device_by_name(device_name)
+        except AsyncFMCError:
+            ctx.error(f"Couldn't find {device_name} in cache")
     for fmc in manager.fmc_list:
         try:
+            ctx.info(f"Gathering device by name {device_name}")
             data = await fmc.get_device_by_name(device_name)
             await manager.add_standalone_to_cache(data)
             return data
@@ -71,6 +75,7 @@ async def get_all_devices(
     if fmc_host:
         try:
             fmc = await manager.select_fmc_by_fmc_host(fmc_host)
+            ctx.info(f"Gathering devices for {fmc.host}")
             return await fmc.get_all_devices()
         except:
             raise AsyncFMCError(f"Cannot return all devices for {fmc_host}")

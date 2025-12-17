@@ -38,12 +38,13 @@ async def get_all_health_alerts(
     """
     if fmc_host:
         fmc = manager.select_fmc_by_fmc_host(fmc_host)
+        ctx.info(f"Gathering health alerts for {fmc.host}")
         return await fmc.get_all_health_alerts()
     response = list([])
     for fmc in manager.fmc_list:
         try:
             response.extend(await fmc.get_all_health_alerts())
-            ctx.info(f"Gathering devices for {fmc.host}")
+            ctx.info(f"Gathering health alerts for {fmc.host}")
         except AsyncFMCError:
             pass
     return response

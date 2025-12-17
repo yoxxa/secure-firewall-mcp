@@ -39,9 +39,13 @@ async def get_ha_pair(
     """
     fmc: AsyncFMC | None = await manager.select_fmc_by_ha_pair_name(ha_pair_name)
     if fmc:
-        return await fmc.get_ha_pair_by_name(ha_pair_name)
+        try:
+            return await fmc.get_ha_pair_by_name(ha_pair_name)
+        except AsyncFMCError:
+            ctx.error(f"Couldn't find {ha_pair_name} in cache")
     for fmc in manager.fmc_list:
         try:
+            ctx.info(f"Gathering HA pair by name {ha_pair_name}")
             data = await fmc.get_ha_pair_by_name(ha_pair_name)
             await manager.add_ha_pair_to_cache(data)
             return data
@@ -68,12 +72,13 @@ async def get_all_ha_pairs(
     # Indicates they want to collect for a specific FMC
     if fmc_host:
         fmc = await manager.select_fmc_by_fmc_host(fmc_host)
+        ctx.info(f"Gathering HA pairs for {fmc.host}")
         return await fmc.get_all_ha_pairs()
     response = list([])
     for fmc in manager.fmc_list:
         try:
             response.extend(await fmc.get_all_ha_pairs())
-            ctx.info(f"Gathering devices for {fmc.host}")
+            ctx.info(f"Gathering HA pairs for {fmc.host}")
         except AsyncFMCError:
             pass
     return response
